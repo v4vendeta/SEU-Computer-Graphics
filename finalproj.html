@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<div>fps: <span id="fps"></span></div>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<html>
+<script id="vertex-shader" type="x-shader/x-vertex">
+    attribute  vec4 vPosition;
+    attribute  vec3 vNormal;
+    attribute  vec2 vTexCoord;
+
+    varying vec2 fTexCoord;
+    varying vec4 view_normal;
+    varying vec4 pos;
+
+    uniform mat4 model;
+    uniform mat4 view;
+    uniform mat4 projection;
+
+    void main()
+    {
+        view_normal=normalize(model*vec4(vNormal,0.0));
+
+        fTexCoord = vTexCoord;
+        pos= model * vPosition;
+        gl_Position = projection*view*pos;
+    }
+  </script>
+
+<script id="fragment-shader" type="x-shader/x-fragment">
+    precision mediump float;
+
+    varying  vec2 fTexCoord;
+    varying vec4 view_normal;
+    varying vec4 pos;
+
+    uniform vec4 ka, kd, ks;
+    uniform float shininess;
+
+    
+    uniform vec4 lightpos;
+    uniform vec4 light_ambient;
+    uniform vec4 light_diffuse;
+    uniform vec4 light_specular;
+    uniform sampler2D texture;
+
+    void main()
+    {
+
+    vec4 ambient = light_ambient * ka;
+    vec4 lightDir = -normalize(lightpos - pos);
+
+    vec4 diffuse = light_diffuse * (kd *max(dot(view_normal, lightDir), 0.0) );
+    vec4 fColor=ambient+diffuse;
+
+    gl_FragColor = 0.7*texture2D( texture, fTexCoord )+0.2*fColor;
+    }
+  </script>
+
+<script id="skybox-vert" type="x-shader/x-vertex">
+    attribute  vec4 vPosition;
+
+    uniform mat4 view;
+    uniform mat4 projection;
+
+    varying vec3 v_SkyCoord;
+
+    void main()
+    {
+        gl_Position = projection*view*vPosition;
+        v_SkyCoord = vPosition.xyz;
+    }
+  </script>
+<script id="skybox-frag" type="x-shader/x-fragment">
+    precision mediump float;
+    uniform samplerCube u_SkyTexMap;
+    varying vec3 v_SkyCoord;
+    void main()
+    {
+       gl_FragColor = textureCube(u_SkyTexMap, v_SkyCoord);
+    }
+  </script>
+
+<script type="text/javascript" src="webgl-utils.js"></script>
+<script type="text/javascript" src="initShaders.js"></script>
+<script type="text/javascript" src="MV.js"></script>
+<script type="text/javascript" src="finalproj.js"></script>
+<script type="text/javascript" src="cam.js"></script>
+<script type="text/javascript" src="handleinput.js"></script>
+<script type="text/javascript" src="model.js"></script>
+<script type="text/javascript" src="enviromentalmap.js"></script>
+<script type="text/javascript" src="rendercontext.js"></script>
+
+<script type="text/javascript" src="models/cube.js"></script>
+<script type="text/javascript" src="models/rock.js"></script>
+<script type="text/javascript" src="models/cyborg.js"></script>
+<script type="text/javascript" src="models/gun.js"></script>
+
+
+<body>
+  <canvas id="gl-canvas" width="512" height="512">
+    Oops ... your browser doesn't support the HTML5 canvas element
+  </canvas>
+
+  <img id="back" src="resources/skybox/front.jpg" style="display: none" />
+  <img id="front" src="resources/skybox/back.jpg" style="display: none" />
+  <img id="bottom" src="resources/skybox/bottom.jpg" style="display: none" />
+  <img id="left" src="resources/skybox/left.jpg" style="display: none" />
+  <img id="right" src="resources/skybox/right.jpg" style="display: none" />
+  <img id="top" src="resources/skybox/top.jpg" style="display: none" />
+
+
+  <img id="foot_back" src="resources/Footballfield/posz.jpg" style="display: none" />
+  <img id="foot_front" src="resources/Footballfield/negz.jpg" style="display: none" />
+  <img id="foot_top" src="resources/Footballfield/posy.jpg" style="display: none" />
+  <img id="foot_bottom" src="resources/Footballfield/negy.jpg" style="display: none" />
+  <img id="foot_left" src="resources/Footballfield/negx.jpg" style="display: none" />
+  <img id="foot_right" src="resources/Footballfield/posx.jpg" style="display: none" />
+
+  <img id="cyborg_base" src="resources/cyborg/cyborg_diffuse.png" style="display: none" />
+  <img id="rock" src="resources/rock/rock.png" style="display: none" />
+  <img id="shotgun" src="resources/shotgun/Sg_Diffuse.png" style="display: none" />
+</body>
+
+</html>
