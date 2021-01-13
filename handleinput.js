@@ -3,6 +3,8 @@ var theta = [0, 0, 0, 0];
 var mouseDown = false;
 var lastMouseX = null;
 var lastMouseY = null;
+var deltaX;
+var deltaY;
 
 function HandleInput() {
   
@@ -35,6 +37,7 @@ function keyDown(event) {
       break;
     case 20:
       cam.Calibrate();
+      break;
   }
 }
 function handleMouseDown(e) {
@@ -51,8 +54,8 @@ function handleMouseMove(e) {
   if (!mouseDown) return;
   let newMouseX = e.clientX;
   let newMouseY = e.clientY;
-  let deltaX = newMouseX - lastMouseX;
-  let deltaY = newMouseY - lastMouseY;
+  deltaX = newMouseX - lastMouseX;
+  deltaY = newMouseY - lastMouseY;
   cam.CameraRotate(radians(-2 * deltaX), 0); //left
   //cam.CameraRotate(radians(-2 * deltaY), 1); //down
   lastMouseX = newMouseX;

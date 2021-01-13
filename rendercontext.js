@@ -15,11 +15,10 @@ class RenderContext {
         this.texture;
         this.modelmat = translate(0, 0, 0); //default modelmat is set to identity
 
-        this.ka=vec4(0.0,0.0,0.0,1.0);
-        this.kd=vec4(0.0,0.0,0.0,1.0);
-        this.ks=vec4(0.0,0.0,0.0,1.0);
+        this.ka=vec4(1.0,1.0,1.0,1.0);
+        this.kd=vec4(1.0,1.0,1.0,1.0);
+        this.ks=vec4(1.0,1.0,1.0,1.0);
         this.shininess=1.0;
     }
-
 
 }

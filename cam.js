@@ -17,6 +17,9 @@ class Camera {
     this.up = vec3(0, 1, 0);
     this.pitch = normalize(cross(this.up, this.roll));
     this.yaw = normalize(cross(this.roll, this.pitch));
+
+    this.original_pos = pos;
+    this.origin_at = at;
   }
 
   CameraMove(dir, sign, speed) {
@@ -111,19 +114,29 @@ class Camera {
 
   GetdirMat() {
     //return this.roll;
-    var origin_dir = vec4(0, 0, -1);
-    var current_dir = vec4(this.roll[0],this.roll[1],this.roll[2]);
-    var angle_vec = mult(origin_dir, current_dir);
-    //var angle = Math.acos(angle_vec);
-    console.log(angle_vec);
-    var gun_trans = translate(this.pos[0], this.pos[1], this.pos[2] - 4);
+    // var origin_dir = normalize(subtract(this.origin_at,this.original_pos));
+    // var current_dir = vec3(-this.roll[0],-this.roll[1],-this.roll[2]);
 
-    //camdir = mult(gun_trans, camdir);
+    // var rad = Math.acos((origin_dir[0] * current_dir[0] + origin_dir[1] * current_dir[1] + origin_dir[2] * current_dir[2])/(length(origin_dir)*length(current_dir)));
 
-    return gun_trans;
+    // console.log(origin_dir, current_dir, rad);
+    
+
+
+    // //camdir = mult(gun_trans, camdir);
+    // var rot = rotateY(rad2angle(-rad));
+    // //return basetrans;
+    var movewithcam = translate(this.pos[0], this.pos[1], this.pos[2] - 4);
+    var basetrans = mult(translate(0.2, -0.5, 4),rotateY(90));
+    return mult(movewithcam,basetrans);
+    
   }
 }
 
+
+function rad2angle(rad) {
+  return rad * 180 / Math.PI;
+}
 
 // mat4x4*vec4
 function vec4mulmat4(v, m) {

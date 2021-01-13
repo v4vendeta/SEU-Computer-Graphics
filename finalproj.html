@@ -35,7 +35,7 @@
     uniform vec4 ka, kd, ks;
     uniform float shininess;
 
-    
+    uniform mat4 light;
     uniform vec4 lightpos;
     uniform vec4 light_ambient;
     uniform vec4 light_diffuse;
@@ -45,13 +45,19 @@
     void main()
     {
 
+    vec3 L=(light*lightpos).xyz;
+    vec3 p=pos.xyz;
+    vec3 n=normalize(view_normal.xyz);
+    vec3 lightDir = normalize(L - p);
+    vec3 e=normalize( -p );
+    vec3 H=normalize( lightDir + e );
     vec4 ambient = light_ambient * ka;
-    vec4 lightDir = -normalize(lightpos - pos);
-
-    vec4 diffuse = light_diffuse * (kd *max(dot(view_normal, lightDir), 0.0) );
-    vec4 fColor=ambient+diffuse;
-
-    gl_FragColor = 0.7*texture2D( texture, fTexCoord )+0.2*fColor;
+    vec4 diffuse = light_diffuse * (kd *max(dot(n, lightDir), 0.0) );
+    vec4 specular=light_specular*ks*pow( max(dot(n, H), 0.0), shininess );
+    
+    vec4 fColor=vec4(0,0,0,1);
+    fColor+=ambient+diffuse+specular;
+    gl_FragColor =fColor*texture2D( texture, fTexCoord );
     }
   </script>
 
@@ -93,13 +99,17 @@
 <script type="text/javascript" src="models/rock.js"></script>
 <script type="text/javascript" src="models/cyborg.js"></script>
 <script type="text/javascript" src="models/gun.js"></script>
-
+<script type="text/javascript" src="models/helmet.js"></script>
+<script type="text/javascript" src="models/gun2.js"></script>
+<script type="text/javascript" src="models/windmill.js"></script>
 
 <body>
   <canvas id="gl-canvas" width="512" height="512">
     Oops ... your browser doesn't support the HTML5 canvas element
   </canvas>
 
+
+  <img id="texImage3" src="resources/TwoSidedPlane_BaseColor.png" hidden> </img>
   <img id="back" src="resources/skybox/front.jpg" style="display: none" />
   <img id="front" src="resources/skybox/back.jpg" style="display: none" />
   <img id="bottom" src="resources/skybox/bottom.jpg" style="display: none" />
@@ -118,6 +128,10 @@
   <img id="cyborg_base" src="resources/cyborg/cyborg_diffuse.png" style="display: none" />
   <img id="rock" src="resources/rock/rock.png" style="display: none" />
   <img id="shotgun" src="resources/shotgun/Sg_Diffuse.png" style="display: none" />
+  <img id="helmet" src="resources/helmet/Default_albedo.jpg" style="display: none" />
+  <img id="cube1" src="resources/cube/albedo.png" style="display: none" />
+  <img id="cube2" src="resources/cube/Cube_BaseColor.png" style="display: none" />
+  <img id="gun2" src="resources/gun2/08_-_Default_baseColor.png" style="display: none" />
 </body>
 
 </html>
